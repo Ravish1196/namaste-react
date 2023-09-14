@@ -63,3 +63,12 @@
     display: flex;
     justify-content: space-between;
 }
+.user-card{
+    padding: 10px;
+    border: 1px solid black;
+    width: 300px;
+}
+.avatar_url{
+    width: 200px;
+    height: 200px;
+}
