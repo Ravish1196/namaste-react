@@ -16,15 +16,15 @@ export const Header = () => {
     const onlineStatus = useOnlineStatus();
 
     return (
-      <div className="header">
+      <div className="flex justify-between shadow-lg m-2  border-black bg-green-100 sm:bg-yellow-50">
         <div className="logo-container">
           <img
-            className="logo"
+            className="w-36"
             src={LOGO_URL}
           ></img>
         </div>
         <div className="nav-items">
-          <ul>
+          <ul className="flex justify-between gap-5 m-8">
             <li>Online Status {onlineStatus?"🌏":"🛑"}</li>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/about">About Us</Link></li>
