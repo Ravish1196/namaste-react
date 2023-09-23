@@ -1,15 +1,23 @@
-import RestaurantCard from "./RestaurantCard";
+import RestaurantCard, {
+  withaggregatedDiscountInfoV3Label,
+} from "./RestaurantCard";
 import resList from "../utils/mockData";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
+import UserContext from "../utils/UserContext";
 const Body = () => {
   //Local State Variables - super powerful variable
 
   const [listOfRestaurants, setlistOfRestaurants] = useState([]);
   const [filteredlistRestaurants, setfilteredlistRestaurants] = useState([]);
   const [searchText, setsearchText] = useState("");
+
+  const RestaurantCardaggregatedDiscountInfoV3 =
+    withaggregatedDiscountInfoV3Label(RestaurantCard);
+
+  console.log(listOfRestaurants);
 
   useEffect(() => {
     fetchData();
@@ -20,6 +28,7 @@ const Body = () => {
     );
 
     const json = await data.json();
+
     //optional chaning
     setlistOfRestaurants(
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
@@ -35,6 +44,8 @@ const Body = () => {
       <h1>Looks like you're offline!! Please check your internet connection</h1>
     );
   }
+
+  const {setUserName, loggedInUser} = useContext(UserContext);
 
   //Conditional rendering
   //   if(listOfRestaurants.length===0){
@@ -55,7 +66,8 @@ const Body = () => {
               setsearchText(e.target.value);
             }}
           />
-          <button className="m-4 bg-green-100 px-4 py-2 rounded-lg"
+          <button
+            className="m-4 bg-green-100 px-4 py-2 rounded-lg"
             onClick={() => {
               const filteredlistRestaurants = listOfRestaurants.filter((res) =>
                 res.info.name.toLowerCase().includes(searchText.toLowerCase())
@@ -65,6 +77,10 @@ const Body = () => {
           >
             Search
           </button>
+          <label>UserName:    </label>
+          <input className="border border-black p-2" 
+          value={loggedInUser}
+          onChange={(e)=>setUserName(e.target.value)}/>
         </div>
         <button
           className="filter-btn px-4 py-2 bg-gray-100 w-25 h-10 mt-11 mr-4 rounded-lg"
@@ -85,7 +101,14 @@ const Body = () => {
             key={restaurant.info.id}
             to={"/restaurants/" + restaurant.info.id}
           >
-            <RestaurantCard resData={restaurant} />
+            {restaurant.info.aggregatedDiscountInfoV3 &&
+            Object.entries(restaurant.info.aggregatedDiscountInfoV3).length !==
+              0 ? (
+              <RestaurantCardaggregatedDiscountInfoV3 resData={restaurant} />
+            ) : (
+              <RestaurantCard resData={restaurant} />
+            )}
+            {/* <RestaurantCard resData={restaurant} /> */}
           </Link>
         ))}
       </div>
